@@ -7,12 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.minkyoung.qa_notice_board.domain.Role;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.engine.internal.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Builder
@@ -77,4 +80,6 @@ public class User implements UserDetails {
         return true;
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL , orphanRemoval = true) //양방향 매핑
+    private List<Question> questions = new ArrayList<>();
 }

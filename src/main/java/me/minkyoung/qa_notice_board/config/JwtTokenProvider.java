@@ -55,7 +55,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(user.getEmail()) //사용자 식별값(email)
-                .claim("role",user.getRole().name()) //권한
+                .claim("auth",user.getRole().name()) //권한
                 .setIssuedAt(now) //생성일
                 .setExpiration(expiry) //만료일
                 .signWith(SignatureAlgorithm.HS512, secretKey) //해시암호로 서명
