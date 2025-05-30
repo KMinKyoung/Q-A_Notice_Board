@@ -89,7 +89,7 @@ public class JwtTokenProvider {
         UserDetails userDetails = userDetailService.loadUserByUsername(claims.getSubject());
 
         //권한 리스트로 변환
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(auth);
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(auth.startsWith("ROLE_")?auth : "ROLE_"+auth);
 
         //Authentication 객체 생성
         return new UsernamePasswordAuthenticationToken(userDetails,"",authorities);

@@ -1,14 +1,12 @@
 package me.minkyoung.qa_notice_board.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.minkyoung.qa_notice_board.domain.Role;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.engine.internal.Cascade;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -18,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Table(name = "user")
 @Entity
@@ -57,7 +56,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return Collections.emptyList();
+        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
     @Override
@@ -82,4 +81,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL , orphanRemoval = true) //양방향 매핑
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL , orphanRemoval = true) //양방향 매핑
+    private List<Answer> answers = new ArrayList<>();
 }

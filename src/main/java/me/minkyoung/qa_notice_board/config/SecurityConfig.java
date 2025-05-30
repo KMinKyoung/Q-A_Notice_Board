@@ -31,6 +31,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() //로그인, 회원가입 허용
                         .requestMatchers(HttpMethod.GET,"/api/**").permitAll() //목록/상세 비회원 가능
+                        .requestMatchers(HttpMethod.GET, "/questions/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()//비회원 접근 가능
+                        .requestMatchers(HttpMethod.POST, "/api/reports").hasRole("USER") //유저만
+                        .requestMatchers(HttpMethod.GET, "/api/reports").hasRole("ADMIN") //관리자만
+                        .requestMatchers(HttpMethod.DELETE, "/api/reports/**").hasRole("ADMIN") //관리자만
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
