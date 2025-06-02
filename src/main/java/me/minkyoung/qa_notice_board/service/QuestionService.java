@@ -50,7 +50,8 @@ public class QuestionService {
                 savedQuestion.getContent(),
                 savedQuestion.getUser().getNickname(),
                 savedQuestion.getCreatedAt(),
-                savedQuestion.getUpdatedAt()
+                savedQuestion.getUpdatedAt(),
+                savedQuestion.getUser().getEmail()
         );
 
         return questionResponseDto;
@@ -70,7 +71,8 @@ public class QuestionService {
                                q.getContent(),
                                q.getUser().getNickname(),
                                q.getCreatedAt(),
-                               q.getUpdatedAt()
+                               q.getUpdatedAt(),
+                               q.getUser().getEmail()
                        ))
                        .collect((Collectors.toList()));
 
@@ -86,7 +88,7 @@ public class QuestionService {
 
         //조회한 질문 Dto로 변환
         QuestionResponseDto questionResponseDto = new QuestionResponseDto(question.getId(), question.getTitle(), question.getContent(),
-                question.getUser().getNickname(),question.getCreatedAt(), question.getUpdatedAt());
+                question.getUser().getNickname(),question.getCreatedAt(), question.getUpdatedAt(),question.getUser().getEmail());
 
         return questionResponseDto;
     }
@@ -110,7 +112,8 @@ public class QuestionService {
                 question.getContent(),
                 question.getUser().getNickname(),
                 question.getCreatedAt(),
-                question.getUpdatedAt()
+                question.getUpdatedAt(),
+                question.getUser().getEmail()
         );
     }
 
@@ -135,7 +138,16 @@ public class QuestionService {
                 question.getContent(),
                 question.getUser().getNickname(),
                 question.getCreatedAt(),
-                question.getUpdatedAt()
+                question.getUpdatedAt(),
+                question.getUser().getEmail()
         );
+    }
+
+    //내 질문만 가져오기
+    public List<QuestionResponseDto> getMyQuestions(User user){
+        List<Question> questions = questionRepository.findAllByUser_Email(user.getEmail());
+        return questions.stream()
+                .map(QuestionResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

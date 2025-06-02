@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import me.minkyoung.qa_notice_board.repository.UserRepository;
 import me.minkyoung.qa_notice_board.service.UserDetailService;
 import org.springframework.beans.factory.annotation.Value;
 import me.minkyoung.qa_notice_board.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -26,6 +28,7 @@ import java.util.List;
 public class JwtTokenProvider {
 
     private final UserDetailService userDetailService;
+    private final UserRepository userRepository;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -86,12 +89,16 @@ public class JwtTokenProvider {
             throw new RuntimeException("권한 정보가 없습니다.");
         }
 
-        UserDetails userDetails = userDetailService.loadUserByUsername(claims.getSubject());
+        String email =claims.getSubject();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다:"+email));
+
+       // UserDetails userDetails = userDetailService.loadUserByUsername(claims.getSubject());
 
         //권한 리스트로 변환
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(auth.startsWith("ROLE_")?auth : "ROLE_"+auth);
 
         //Authentication 객체 생성
-        return new UsernamePasswordAuthenticationToken(userDetails,"",authorities);
+        return new UsernamePasswordAuthenticationToken(user,"",authorities);
     }
 }

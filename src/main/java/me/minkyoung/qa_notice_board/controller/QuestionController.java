@@ -52,4 +52,11 @@ public class QuestionController {
         questionService.deleteQuestion(id, user);
         return ResponseEntity.ok().build();
     }
+
+    //내 질문 조회
+    @GetMapping("/questions/my")
+    public ResponseEntity<List<QuestionResponseDto>> getMyQuestions(@AuthenticationPrincipal(expression = "#this") User user){
+        List<QuestionResponseDto> questions = questionService.getMyQuestions(user);
+        return ResponseEntity.ok(questions);
+    }
 }
