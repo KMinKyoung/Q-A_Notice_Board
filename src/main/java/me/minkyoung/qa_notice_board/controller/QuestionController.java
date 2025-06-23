@@ -6,6 +6,7 @@ import me.minkyoung.qa_notice_board.dto.QuestionResponseDto;
 import me.minkyoung.qa_notice_board.entity.User;
 import me.minkyoung.qa_notice_board.service.QuestionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     //질문 등록(로그인한 사용자만)
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/questions")
     public ResponseEntity addQuestion(@RequestBody QuestionRequestDto requestDto, @AuthenticationPrincipal User user) {
         QuestionResponseDto add= questionService.createQuestion(requestDto, user);
